@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alquiler de Vehículos P2P - Plataforma MVP</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Iconos de FontAwesome para UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- NAVBAR / CABECERA PRINCIPAL               -->
+    <!-- ========================================== -->
+    <header class="navbar-header">
+        <div class="nav-container">
+            <div class="logo-area">
+                <span class="badge-p2p">P2P</span>
+                <div class="logo-text">
+                    <h1>Alquiler de Vehículos P2P</h1>
+                    <small>PLATAFORMA DE VEHÍCULOS · V0.1</small>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="index.html#inicio">Inicio</a>
+                <a href="index.html#catalogo">Catálogo</a>
+                <a href="index.html#beneficios">Beneficios</a>
+            </nav>
+
+            <div class="nav-actions">
+                <!-- Menú Desplegable de Perfiles -->
+                <div class="dropdown">
+                    <button class="btn-dropdown">
+                        Acceso Perfiles <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="conductor.html"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
+                        <a href="propietario.html"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
+                        <a href="soporte.html"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
+                    </div>
+                </div>
+
+                <button class="btn-login" onclick="alert('Modal de Iniciar Sesión')">Iniciar Sesión</button>
+
+                <!-- Menú Desplegable de Registro -->
+                <div class="dropdown">
+                    <button class="btn-register">Crear Cuenta <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#registro-cliente">Como Arrendatario</a>
+                        <a href="#registro-propietario">Como Propietario</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ========================================== -->
+        <!-- HERO SECTION & BUSCADOR RÁPIDO             -->
+        <!-- ========================================== -->
+        <section id="inicio" class="hero-section">
+            <div class="hero-content">
+                <h2>Alquila el vehículo ideal o rentabiliza el tuyo</h2>
+                <p>Conecta de forma segura con propietarios verificados y conductores calificados.</p>
+            </div>
+
+            <!-- Buscador Rápido Integrado -->
+            <div class="search-bar-container">
+                <div class="search-field">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <label>UBICACIÓN</label>
+                        <input type="text" placeholder="Medellín, Antioquia">
+                    </div>
+                </div>
+                <div class="search-field">
+                    <i class="fa-solid fa-calendar"></i>
+                    <div>
+                        <label>FECHAS</label>
+                        <input type="text" placeholder="28 ago - 30 ago">
+                    </div>
+                </div>
+                <div class="search-field">
+                    <div>
+                        <label>CATEGORÍA</label>
+                        <select>
+                            <option>Todas</option>
+                            <option>Motos</option>
+                            <option>Autos Estándar</option>
+                            <option>Autos Lujo</option>
+                            <option>Utilitarios</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-search">Buscar</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- CATÁLOGO DESTACADO (LANDING)              -->
+        <!-- ========================================== -->
+        <section id="catalogo" class="catalog-section">
+            <h3>Vehículos Destacados</h3>
+            <div class="vehicle-grid">
+                <!-- Vehículo 1 -->
+                <article class="vehicle-card">
+                    <div class="car-img-placeholder" style="background: linear-gradient(135deg, #cbd5e1, #64748b);">
+                        <span class="price-tag">$120.000/día</span>
+                    </div>
+                    <div class="car-info">
+                        <h4>Renault Logan 2022</h4>
+                        <p class="car-location"><i class="fa-solid fa-location-dot"></i> Medellín · a 2.4 km</p>
+                        <div class="car-badges">
+                            <!-- Inyectar atributo #estado aquí -->
+                            <span class="badge active">Activo</span>
+                            <!-- Inyectar atributo peritaje aquí -->
+                            <span class="badge verified">Peritaje al día</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Vehículo 2 -->
+                <article class="vehicle-card">
+                    <div class="car-img-placeholder" style="background: linear-gradient(135deg, #94a3b8, #475569);">
+                        <span class="price-tag">$260.000/día</span>
+                    </div>
+                    <div class="car-info">
+                        <h4>Kawasaki Z900</h4>
+                        <p class="car-location"><i class="fa-solid fa-location-dot"></i> Poblado · a 1.1 km</p>
+                        <div class="car-badges">
+                            <span class="badge active">Activo</span>
+                            <span class="badge verified">Peritaje al día</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Vehículo 3 -->
+                <article class="vehicle-card">
+                    <div class="car-img-placeholder" style="background: linear-gradient(135deg, #64748b, #334155);">
+                        <span class="price-tag">$180.000/día</span>
+                    </div>
+                    <div class="car-info">
+                        <h4>NKS 200 Motocarguero</h4>
+                        <p class="car-location"><i class="fa-solid fa-location-dot"></i> Itagüí · a 6.1 km</p>
+                        <div class="car-badges">
+                            <span class="badge active">Activo</span>
+                            <span class="badge warning">Peritaje por vencer</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- PIE DE PÁGINA (FOOTER)                    -->
+    <!-- ========================================== -->
+    <footer class="footer-corporate">
+        <div class="footer-container">
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">Sobre Nosotros</a>
+                <a href="#">Términos del Servicio</a>
+                <a href="#">Preguntas Frecuentes</a>
+                <a href="#">Contáctanos</a>
+            </div>
+            <div class="footer-legal">
+                <small>v0.1 — 2026 Alquiler de Vehículos P2P</small>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
