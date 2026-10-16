@@ -113,17 +113,6 @@ body {
     font-size: 0.9rem;
 }
 
-.btn-login {
-    background-color: transparent;
-    color: var(--primary-navy);
-    border: 1px solid var(--primary-navy);
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
 .dropdown-content {
     display: none;
     position: absolute;
@@ -584,3 +573,63 @@ body {
         display: none;
     }
 }
+/* ========================================== */
+/* AÑADIDOS                                   */
+/* ========================================== */
+.btn-link { display: inline-block; margin-top: 12px; background: var(--accent-yellow); color: var(--primary-navy); padding: 8px 16px; border-radius: 6px; font-weight: bold; text-decoration: none; }
+.btn-link:hover { background: var(--accent-yellow-hover); }
+.btn-demo { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+.sesion-activa { font-size: 0.85rem; font-weight: 600; color: var(--primary-navy); }
+.hero-content p { color: #cbd5e1; }
+.search-field .dos-fechas { display: flex; gap: 6px; }
+.table-scroll { overflow-x: auto; }
+.section-gap { margin-top: 2rem; }
+.panel-section h3 { color: var(--primary-navy); margin-bottom: 8px; }
+.check-line { display: flex; gap: 8px; align-items: flex-start; margin: 12px 0; font-size: 0.9rem; }
+.beneficios-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.beneficio { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; }
+[hidden] { display: none !important; }
+
+/* Formularios */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.form-group input, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; background: white; font-size: 0.9rem; }
+.msg-error { color: var(--danger-red); font-size: 0.85rem; font-weight: 600; min-height: 1.2em; }
+
+/* Ventanas de acceso y registro (<dialog>) */
+dialog { border: none; border-radius: 12px; padding: 24px; width: 92%; max-width: 380px; margin: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+dialog::backdrop { background: rgba(15, 23, 42, 0.75); }
+#dlgRegistro { max-width: 720px; }
+dialog h3 { color: var(--primary-navy); margin-bottom: 14px; }
+dialog .form-group { margin-bottom: 12px; }
+dialog .form-grid .form-group { margin-bottom: 0; }
+.modal-botones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+#formRegistro[data-rol="CLIENTE"] .solo-propietario,
+#formRegistro[data-rol="PROPIETARIO"] .solo-cliente { display: none; }
+
+/* Tarjetas del catálogo: fondo y foto */
+.car-img-placeholder { background: linear-gradient(135deg, #94a3b8, #475569); overflow: hidden; }
+.car-img-placeholder img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.car-img-placeholder .price-tag { position: relative; z-index: 1; }
+
+/* Mensajes cuando no hay datos */
+#listaVehiculos:empty::before { content: "No se encontraron vehículos disponibles para los criterios ingresados"; grid-column: 1 / -1; color: var(--text-muted); }
+tbody:empty::after { content: "Sin registros"; display: block; padding: 12px; color: var(--text-muted); }
+
+/* Colores de los estados: el HTML escribe data-estado="..." y el CSS decide el color */
+.badge[data-estado] { background: #ffedd5; color: var(--warning-orange); }
+.badge[data-estado="Activo"], .badge[data-estado="Activa"], .badge[data-estado="Aprobado"],
+.badge[data-estado="Finalizada"], .badge[data-estado="AlDia"] { background: #d1fae5; color: var(--success-green); }
+.badge[data-estado="Cancelada"], .badge[data-estado="Rechazado"], .badge[data-estado="Inactivo"], .badge[data-estado="Bloqueada"],
+.badge[data-estado="Inmovilizada"], .badge[data-estado="En disputa"] { background: #fee2e2; color: var(--danger-red); }
+.car-badges .badge[data-estado="Activo"] { background: #e0f2fe; color: #0284c7; }
+
+/* Botones de cada fila: solo se ven en el estado que corresponde */
+.acciones .btn-action { display: none; }
+tr[data-estado="Confirmada"] .b-checkin,
+tr[data-estado="En curso"] .b-checkout, tr[data-estado="En curso"] .b-sos,
+tr[data-estado="Finalizada"][data-calificada="no"] .b-calificar,
+tr[data-estado="Pendiente"] .b-aprobar, tr[data-estado="Pendiente"] .b-rechazar,
+tr[data-estado="Por validar"] .b-fotosok, tr[data-estado="Por validar"] .b-danos,
+tr[data-estado="Generado"] .b-escalar,
+tr[data-bloqueada="si"] .b-desbloquear { display: inline-block; }

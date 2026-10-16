@@ -5,51 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Conductor - Alquiler de Vehículos P2P</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Iconos de FontAwesome para UI -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-pagina="conductor">
 
-    <!-- ========================================== -->
-    <!-- NAVBAR / CABECERA PRINCIPAL               -->
-    <!-- ========================================== -->
     <header class="navbar-header">
         <div class="nav-container">
             <div class="logo-area">
                 <span class="badge-p2p">P2P</span>
                 <div class="logo-text">
                     <h1>Alquiler de Vehículos P2P</h1>
-                    <small>PLATAFORMA DE VEHÍCULOS · V0.1</small>
+                    <small>PLATAFORMA DE VEHÍCULOS · V1.0</small>
                 </div>
             </div>
-
             <nav class="nav-links">
                 <a href="index.html#inicio">Inicio</a>
                 <a href="index.html#catalogo">Catálogo</a>
                 <a href="index.html#beneficios">Beneficios</a>
             </nav>
-
             <div class="nav-actions">
-                <!-- Menú Desplegable de Perfiles -->
+                <span class="sesion-activa" id="nombreSesion"></span>
+                <button class="btn-demo" id="btnCerrarSesion" onclick="cerrarSesion()" hidden>Cerrar sesión</button>
                 <div class="dropdown">
-                    <button class="btn-dropdown">
-                        Acceso Perfiles <i class="fa-solid fa-chevron-down"></i>
-                    </button>
+                    <button class="btn-dropdown">Acceso Perfiles <i class="fa-solid fa-chevron-down"></i></button>
                     <div class="dropdown-content">
-                        <a href="conductor.html"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
-                        <a href="propietario.html"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
-                        <a href="soporte.html"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
+                        <a href="#" onclick="abrirPerfil('CLIENTE'); return false;"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
+                        <a href="#" onclick="abrirPerfil('PROPIETARIO'); return false;"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
+                        <a href="#" onclick="abrirPerfil('ADMIN'); return false;"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
                     </div>
                 </div>
-
-                <button class="btn-login" onclick="alert('Modal de Iniciar Sesión')">Iniciar Sesión</button>
-
-                <!-- Menú Desplegable de Registro -->
                 <div class="dropdown">
                     <button class="btn-register">Crear Cuenta <i class="fa-solid fa-chevron-down"></i></button>
                     <div class="dropdown-content">
-                        <a href="#registro-cliente">Como Arrendatario</a>
-                        <a href="#registro-propietario">Como Propietario</a>
+                        <a href="#" onclick="abrirRegistro('CLIENTE'); return false;">Como Conductor</a>
+                        <a href="#" onclick="abrirRegistro('PROPIETARIO'); return false;">Como Propietario</a>
                     </div>
                 </div>
             </div>
@@ -57,95 +46,126 @@
     </header>
 
     <main>
-        <!-- ========================================== -->
-        <!-- PORTAL DEL CONDUCTOR (ARRENDATARIO)        -->
-        <!-- ========================================== -->
-        <section id="portal-arrendatario" class="panel-section">
-            <div class="panel-header-tag">PORTAL DEL ARRENDATARIO</div>
+        <section id="portal-conductor" class="panel-section">
+            <div class="panel-header-tag">PORTAL DEL CONDUCTOR</div>
             <h2>Búsqueda, Perfil y Reserva de Vehículo</h2>
 
             <div class="client-dashboard-layout">
-                <!-- Estado de Cuenta y Perfil (Heredado de Persona) -->
                 <div class="client-profile-box">
                     <h3>Perfil de Usuario</h3>
-                    <p><strong>Nombre:</strong> <span data-bind="persona.nombre">Carlos Pérez</span></p>
-                    <p><strong>Correo:</strong> <span data-bind="persona.correo">carlos.perez@email.com</span></p>
-                    <!-- Inyectar atributo #bloqueado aquí -->
-                    <div class="status-indicator success">
-                        <i class="fa-solid fa-circle-check"></i> Estado de Cuenta: Activo (0/3 intentos fallidos)
-                    </div>
+                    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+                    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+                    <p><strong>Licencia:</strong> <span id="perfilLicencia"></span></p>
+                    <div class="status-indicator success"><i class="fa-solid fa-circle-check"></i> <span id="perfilEstado"></span></div>
                 </div>
-
-                <!-- Historial de Reservas -->
                 <div class="client-history-box">
-                    <h3>Historial de Reservas (#historialReservas)</h3>
+                    <h3>Historial de Reservas</h3>
+                    <div class="table-scroll">
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Vehículo</th>
-                                <th>Monto Total</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Inyectar bucle para #historialReservas (Orden Descendente) -->
-                            <tr>
-                                <td>24 Ago 2026</td>
-                                <td>Renault Logan 2022</td>
-                                <td>$268.800</td>
-                                <td><span class="badge verified">Completada</span></td>
-                            </tr>
-                            <tr>
-                                <td>10 Jul 2026</td>
-                                <td>AKT NKD 125</td>
-                                <td>$95.000</td>
-                                <td><span class="badge verified">Completada</span></td>
-                            </tr>
-                        </tbody>
+                        <thead><tr><th>Reserva</th><th>Vehículo</th><th>Fechas</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="historialReservas"></tbody>
                     </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- Componente Checkout / método solicitarReserva() -->
             <div class="checkout-card">
-                <h3>Resumen de Reserva - Método <code>solicitarReserva()</code></h3>
-                <div class="checkout-details">
-                    <div class="line"><span>Tarifa Diaria (2 días):</span> <strong>$240.000</strong></div>
-                    <div class="line"><span>Seguro Diario ($S_d$):</span> <strong>$12.000</strong></div>
-                    <div class="line"><span>Depósito de Garantía ($G$):</span> <strong>$60.000</strong></div>
-                    <div class="line"><span>Comisión de Plataforma (12%):</span> <strong>$28.800</strong></div>
-                    <hr>
-                    <div class="line total"><span>Total a Pagar:</span> <strong>$340.800</strong></div>
+                <h3>Nueva Reserva</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Vehículo</label>
+                        <select id="selVehiculo" onchange="actualizarResumen()"><option value="">Seleccione un vehículo</option></select></div>
+                    <div class="form-group"><label>Fecha de inicio</label><input type="date" id="fechaInicio" onchange="actualizarResumen()"></div>
+                    <div class="form-group"><label>Fecha de fin</label><input type="date" id="fechaFin" onchange="actualizarResumen()"></div>
+                    <div class="form-group"><label>Cupo de la tarjeta (simulado)</label><input type="number" id="cupoTarjeta" value="2000000"></div>
                 </div>
-                <button class="btn-primary" onclick="solicitarReserva()">Confirmar y Pagar Reserva</button>
+
+                <div class="line"><span>Tarifa (<span id="rDias">0</span> días):</span> <strong id="rTarifa">$0</strong></div>
+                <div class="line"><span>Microseguro:</span> <strong id="rSeguro">$0</strong></div>
+                <div class="line"><span>Comisión de plataforma (10%):</span> <strong id="rComision">$0</strong></div>
+                <hr>
+                <div class="line total"><span>Total a pagar:</span> <strong id="rTotal">$0</strong></div>
+                <div class="line"><span>Depósito de garantía (se retiene y se libera al entregar):</span> <strong id="rDeposito">$0</strong></div>
+
+                <label class="check-line">
+                    <input type="checkbox" id="aceptaClausula">
+                    <span>Acepto la cláusula de uso privado: el vehículo no podrá usarse para transporte público o comercial de pasajeros (Uber, Didi, taxis, etc.).</span>
+                </label>
+                <button class="btn-primary" onclick="confirmarReserva()">Confirmar y Pagar Reserva</button>
             </div>
         </section>
     </main>
 
-    <!-- ========================================== -->
-    <!-- PIE DE PÁGINA (FOOTER)                    -->
-    <!-- ========================================== -->
+    <!-- Plantillas: main.js las rellena. Los botones de cada fila los muestra el CSS según data-estado. -->
+    <template id="filaReserva">
+        <tr data-estado="{{estado}}" data-calificada="{{calificada}}">
+            <td>{{id}}</td><td>{{vehiculo}}</td><td>{{fechas}}</td><td>{{total}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td class="acciones">
+                <button class="btn-action approve b-checkin" onclick="hacerCheckIn('{{id}}')">Check-in</button>
+                <button class="btn-action approve b-checkout" onclick="hacerCheckOut('{{id}}')">Check-out</button>
+                <button class="btn-action reject b-sos" onclick="reportarSOS('{{id}}')">SOS</button>
+                <button class="btn-action warn b-calificar" onclick="calificar('{{id}}')">Calificar</button>
+            </td>
+        </tr>
+    </template>
+
     <footer class="footer-corporate">
         <div class="footer-container">
-            <div class="social-icons">
-                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-            </div>
             <div class="footer-links">
                 <a href="#">Sobre Nosotros</a>
                 <a href="#">Términos del Servicio</a>
                 <a href="#">Preguntas Frecuentes</a>
                 <a href="#">Contáctanos</a>
             </div>
-            <div class="footer-legal">
-                <p>Legal glecer onna scair lirtis iteda obce rartator ia vehiculo pox testib atorma. Lite puca onumdo akar marteryra canera y cet pontar de tus cantos.</p>
-                <small>v0.1 — 2026 Alquiler de Vehículos P2P</small>
-            </div>
+            <div class="footer-legal"><small>v1.0 — 2026 Alquiler de Vehículos P2P</small></div>
         </div>
     </footer>
 
+    <!-- Ventana de acceso (los mensajes de error los escribe main.js) -->
+    <dialog id="dlgLogin" oncancel="cancelarLogin()">
+        <form id="formLogin" onsubmit="intentarLogin(event)">
+            <h3 id="loginTitulo"></h3>
+            <div class="form-group"><label>Usuario o correo</label><input type="text" id="loginUsuario" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="loginClave" required></div>
+            <p class="msg-error" id="loginMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="cancelarLogin()">Cancelar</button>
+                <button type="submit" class="btn-primary">Ingresar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Ventana de registro: el CSS muestra los campos según data-rol (CLIENTE o PROPIETARIO) -->
+    <dialog id="dlgRegistro">
+        <form id="formRegistro" onsubmit="enviarRegistro(event)">
+            <h3 class="solo-cliente">Crear cuenta como Conductor</h3>
+            <h3 class="solo-propietario">Crear cuenta como Propietario</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>Nombre completo</label><input type="text" id="regNombre" required></div>
+                <div class="form-group"><label>Documento de identidad</label><input type="text" id="regDocumento" required></div>
+                <div class="form-group"><label>Correo (será su usuario)</label><input type="email" id="regCorreo" required></div>
+                <div class="form-group"><label>Contraseña (mínimo 4 caracteres)</label><input type="password" id="regClave" required></div>
+                <div class="form-group"><label>Confirmar contraseña</label><input type="password" id="regClave2" required></div>
+                <div class="form-group"><label>Documento de identidad (PDF/JPG)</label><input type="file" id="regCedula"></div>
+                <div class="form-group solo-cliente"><label>Categoría de licencia</label>
+                    <select id="regLicencia"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>B3</option><option>C1</option><option>C2</option></select></div>
+                <div class="form-group solo-cliente"><label>Contacto de emergencia</label><input type="text" id="regContacto" placeholder="Nombre - Teléfono"></div>
+                <div class="form-group solo-cliente"><label>Licencia de conducción (PDF/JPG)</label><input type="file" id="regLicenciaArchivo"></div>
+                <div class="form-group solo-propietario"><label>Número de tarjeta de propiedad</label><input type="text" id="regTarjeta"></div>
+            </div>
+            <p class="msg-error" id="regMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="document.getElementById('dlgRegistro').close()">Cancelar</button>
+                <button type="submit" class="btn-primary">Crear cuenta</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Orden importante: primero los datos, luego las clases, al final el main -->
+    <script src="js/datos.js"></script>
+    <script src="js/Vehiculo.js"></script>
+    <script src="js/Reserva.js"></script>
+    <script src="js/Usuario.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
