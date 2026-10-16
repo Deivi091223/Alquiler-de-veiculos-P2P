@@ -44,3 +44,92 @@
             </div>
         </div>
     </header>
+       <main>
+        <section id="portal-conductor" class="panel-section">
+            <div class="panel-header-tag">PORTAL DEL CONDUCTOR</div>
+            <h2>Búsqueda, Perfil y Reserva de Vehículo</h2>
+
+            <div class="client-dashboard-layout">
+                <div class="client-profile-box">
+                    <h3>Perfil de Usuario</h3>
+                    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+                    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+                    <p><strong>Licencia:</strong> <span id="perfilLicencia"></span></p>
+                    <div class="status-indicator success"><i class="fa-solid fa-circle-check"></i> <span id="perfilEstado"></span></div>
+                </div>
+                <div class="client-history-box">
+                    <h3>Historial de Reservas</h3>
+                    <div class="table-scroll">
+                    <table class="data-table">
+                        <thead><tr><th>Reserva</th><th>Vehículo</th><th>Fechas</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="historialReservas"></tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-card">
+                <h3>Nueva Reserva</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Vehículo</label>
+                        <select id="selVehiculo" onchange="actualizarResumen()"><option value="">Seleccione un vehículo</option></select></div>
+                    <div class="form-group"><label>Fecha de inicio</label><input type="date" id="fechaInicio" onchange="actualizarResumen()"></div>
+                    <div class="form-group"><label>Fecha de fin</label><input type="date" id="fechaFin" onchange="actualizarResumen()"></div>
+                    <div class="form-group"><label>Cupo de la tarjeta (simulado)</label><input type="number" id="cupoTarjeta" value="2000000"></div>
+                </div>
+
+                <div class="line"><span>Tarifa (<span id="rDias">0</span> días):</span> <strong id="rTarifa">$0</strong></div>
+                <div class="line"><span>Microseguro:</span> <strong id="rSeguro">$0</strong></div>
+                <div class="line"><span>Comisión de plataforma (10%):</span> <strong id="rComision">$0</strong></div>
+                <hr>
+                <div class="line total"><span>Total a pagar:</span> <strong id="rTotal">$0</strong></div>
+                <div class="line"><span>Depósito de garantía (se retiene y se libera al entregar):</span> <strong id="rDeposito">$0</strong></div>
+
+                <label class="check-line">
+                    <input type="checkbox" id="aceptaClausula">
+                    <span>Acepto la cláusula de uso privado: el vehículo no podrá usarse para transporte público o comercial de pasajeros (Uber, Didi, taxis, etc.).</span>
+                </label>
+                <button class="btn-primary" onclick="confirmarReserva()">Confirmar y Pagar Reserva</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Plantillas: main.js las rellena. Los botones de cada fila los muestra el CSS según data-estado. -->
+    <template id="filaReserva">
+        <tr data-estado="{{estado}}" data-calificada="{{calificada}}">
+            <td>{{id}}</td><td>{{vehiculo}}</td><td>{{fechas}}</td><td>{{total}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td class="acciones">
+                <button class="btn-action approve b-checkin" onclick="hacerCheckIn('{{id}}')">Check-in</button>
+                <button class="btn-action approve b-checkout" onclick="hacerCheckOut('{{id}}')">Check-out</button>
+                <button class="btn-action reject b-sos" onclick="reportarSOS('{{id}}')">SOS</button>
+                <button class="btn-action warn b-calificar" onclick="calificar('{{id}}')">Calificar</button>
+            </td>
+        </tr>
+    </template>
+
+    <footer class="footer-corporate">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="#">Sobre Nosotros</a>
+                <a href="#">Términos del Servicio</a>
+                <a href="#">Preguntas Frecuentes</a>
+                <a href="#">Contáctanos</a>
+            </div>
+            <div class="footer-legal"><small>v1.0 — 2026 Alquiler de Vehículos P2P</small></div>
+        </div>
+    </footer>
+
+    <!-- Ventana de acceso (los mensajes de error los escribe main.js) -->
+    <dialog id="dlgLogin" oncancel="cancelarLogin()">
+        <form id="formLogin" onsubmit="intentarLogin(event)">
+            <h3 id="loginTitulo"></h3>
+            <div class="form-group"><label>Usuario o correo</label><input type="text" id="loginUsuario" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="loginClave" required></div>
+            <p class="msg-error" id="loginMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="cancelarLogin()">Cancelar</button>
+                <button type="submit" class="btn-primary">Ingresar</button>
+            </div>
+        </form>
+    </dialog>
