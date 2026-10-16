@@ -5,51 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Propietario - Alquiler de Vehículos P2P</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Iconos de FontAwesome para UI -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-pagina="propietario">
 
-    <!-- ========================================== -->
-    <!-- NAVBAR / CABECERA PRINCIPAL               -->
-    <!-- ========================================== -->
     <header class="navbar-header">
         <div class="nav-container">
             <div class="logo-area">
                 <span class="badge-p2p">P2P</span>
                 <div class="logo-text">
                     <h1>Alquiler de Vehículos P2P</h1>
-                    <small>PLATAFORMA DE VEHÍCULOS · V0.1</small>
+                    <small>PLATAFORMA DE VEHÍCULOS · V1.0</small>
                 </div>
             </div>
-
             <nav class="nav-links">
                 <a href="index.html#inicio">Inicio</a>
                 <a href="index.html#catalogo">Catálogo</a>
                 <a href="index.html#beneficios">Beneficios</a>
             </nav>
-
             <div class="nav-actions">
-                <!-- Menú Desplegable de Perfiles -->
+                <span class="sesion-activa" id="nombreSesion"></span>
+                <button class="btn-demo" id="btnCerrarSesion" onclick="cerrarSesion()" hidden>Cerrar sesión</button>
                 <div class="dropdown">
-                    <button class="btn-dropdown">
-                        Acceso Perfiles <i class="fa-solid fa-chevron-down"></i>
-                    </button>
+                    <button class="btn-dropdown">Acceso Perfiles <i class="fa-solid fa-chevron-down"></i></button>
                     <div class="dropdown-content">
-                        <a href="conductor.html"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
-                        <a href="propietario.html"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
-                        <a href="soporte.html"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
+                        <a href="#" onclick="abrirPerfil('CLIENTE'); return false;"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
+                        <a href="#" onclick="abrirPerfil('PROPIETARIO'); return false;"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
+                        <a href="#" onclick="abrirPerfil('ADMIN'); return false;"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
                     </div>
                 </div>
-
-                <button class="btn-login" onclick="alert('Modal de Iniciar Sesión')">Iniciar Sesión</button>
-
-                <!-- Menú Desplegable de Registro -->
                 <div class="dropdown">
                     <button class="btn-register">Crear Cuenta <i class="fa-solid fa-chevron-down"></i></button>
                     <div class="dropdown-content">
-                        <a href="#registro-cliente">Como Arrendatario</a>
-                        <a href="#registro-propietario">Como Propietario</a>
+                        <a href="#" onclick="abrirRegistro('CLIENTE'); return false;">Como Conductor</a>
+                        <a href="#" onclick="abrirRegistro('PROPIETARIO'); return false;">Como Propietario</a>
                     </div>
                 </div>
             </div>
@@ -57,52 +46,73 @@
     </header>
 
     <main>
-        <!-- ========================================== -->
-        <!-- PORTAL DEL PROPIETARIO (ARRENDADOR)        -->
-        <!-- ========================================== -->
         <section id="portal-propietario" class="panel-section">
             <div class="panel-header-tag">PORTAL DEL PROPIETARIO</div>
             <h2>Panel de Control y Gestión de Activos</h2>
 
-            <!-- Tarjetas de Métricas -->
             <div class="metrics-grid">
-                <div class="metric-card">
-                    <span>GANANCIAS ACUMULADAS (#gananciasAcumuladas)</span>
-                    <h3>$1.240.000</h3>
-                    <small>+12% vs. mes anterior</small>
-                </div>
-                <div class="metric-card">
-                    <span>VEHÍCULOS PUBLICADOS (#vehiculosPublicados)</span>
-                    <h3>3 / 4</h3>
-                    <small>1 con peritaje pendiente</small>
-                </div>
-                <div class="metric-card">
-                    <span>CALIFICACIÓN PROMEDIO (#calificacionPromedio)</span>
-                    <h3>4.8 ★</h3>
-                    <small>Basado en 27 rentas</small>
-                </div>
+                <div class="metric-card"><span>GANANCIAS ACUMULADAS</span><h3 id="gananciasAcumuladas"></h3><small>Reservas finalizadas</small></div>
+                <div class="metric-card"><span>VEHÍCULOS PUBLICADOS</span><h3 id="vehiculosPublicados"></h3><small id="detalleVehiculos"></small></div>
+                <div class="metric-card"><span>CALIFICACIÓN PROMEDIO</span><h3 id="calificacionPromedio"></h3><small id="detalleCalificacion"></small></div>
             </div>
 
-            <!-- Acciones y gestión de inventario -->
-            <div class="owner-actions-bar">
-                <button class="btn-primary" onclick="gestionarDisponibilidad()">Gestionar Disponibilidad</button>
-                <button class="btn-secondary" onclick="aprobarReserva()">Aprobar Reserva Pendiente</button>
+            <h3>Mis Vehículos</h3>
+            <div class="table-scroll">
+            <table class="data-table">
+                <thead><tr><th>Placa</th><th>Vehículo</th><th>Estado</th><th>Peritaje</th><th>Tarifa diaria</th></tr></thead>
+                <tbody id="tablaVehiculos"></tbody>
+            </table>
             </div>
 
-            <!-- Formulario interactivo cargarDocumentosAuto() -->
-            <div class="document-upload-box">
-                <h3>Cargar Documentos de Vehículo — <code>cargarDocumentosAuto()</code></h3>
-                <form onsubmit="event.preventDefault(); alert('Documentos cargados exitosamente');">
-                    <div class="form-group">
-                        <label>Seleccionar Vehículo (Placa):</label>
-                        <select>
-                            <option>ABC-12D (Renault Logan)</option>
-                            <option>LUX-01A (Kawasaki Z900)</option>
-                        </select>
+            <h3 class="section-gap">Reservas</h3>
+            <div class="table-scroll">
+            <table class="data-table">
+                <thead><tr><th>Reserva</th><th>Vehículo</th><th>Fechas</th><th>Ingreso</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="tablaReservas"></tbody>
+            </table>
+            </div>
+
+            <div class="document-upload-box section-gap">
+                <h3>Gestionar Disponibilidad (bloquear fechas)</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Vehículo</label><select id="selBloqueoVehiculo"></select></div>
+                    <div class="form-group"><label>Desde</label><input type="date" id="bloqueoInicio"></div>
+                    <div class="form-group"><label>Hasta</label><input type="date" id="bloqueoFin"></div>
+                </div>
+                <button class="btn-primary" onclick="gestionarDisponibilidad()">Bloquear Fechas</button>
+            </div>
+
+            <div class="document-upload-box section-gap">
+                <h3>Publicar Nuevo Vehículo</h3>
+                <form id="formPublicar" onsubmit="enviarPublicacion(event)">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Tipo</label>
+                            <select id="pubTipo"><option value="AUTO">Auto</option><option value="MOTO">Moto</option><option value="UTILITARIO">Utilitario</option></select></div>
+                        <div class="form-group"><label>Subcategoría (autos y utilitarios)</label>
+                            <select id="pubSubcategoria"><option>Estándar</option><option>Lujo</option><option>Motocarguero</option><option>Camión / Van</option></select></div>
+                        <div class="form-group"><label>Cilindraje (solo motos)</label><input type="number" id="pubCilindraje" placeholder="Ej: 300"></div>
+                        <div class="form-group"><label>Placa</label><input type="text" id="pubPlaca" required></div>
+                        <div class="form-group"><label>Marca</label><input type="text" id="pubMarca" required></div>
+                        <div class="form-group"><label>Modelo</label><input type="text" id="pubModelo" required></div>
+                        <div class="form-group"><label>Año</label><input type="number" id="pubAnio" required></div>
+                        <div class="form-group"><label>Ubicación</label><input type="text" id="pubUbicacion" required></div>
+                        <div class="form-group"><label>Propósito</label><input type="text" id="pubProposito" placeholder="Ej: Urbano / Ciudad" required></div>
+                        <div class="form-group"><label>Tarifa diaria ($)</label><input type="number" min="1" id="pubTarifa" required></div>
+                        <div class="form-group"><label>Valor comercial del peritaje ($)</label><input type="number" min="1" id="pubValor" required></div>
+                        <div class="form-group"><label>Peritaje técnico (PDF/JPG)</label><input type="file" id="pubPeritaje"></div>
+                        <div class="form-group"><label>Tarjeta de propiedad (PDF/JPG)</label><input type="file" id="pubTarjeta"></div>
                     </div>
-                    <div class="form-group">
-                        <label>Subir Peritaje Técnico y Tarjeta de Propiedad (PDF/JPG):</label>
-                        <input type="file" required>
+                    <button type="submit" class="btn-primary">Enviar para Aprobación</button>
+                </form>
+            </div>
+
+            <div class="document-upload-box section-gap">
+                <h3>Renovar Peritaje — <code>cargarDocumentosAuto()</code></h3>
+                <form onsubmit="enviarDocumentos(event)">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Vehículo (placa)</label><select id="selDocVehiculo"></select></div>
+                        <div class="form-group"><label>Nuevo valor comercial ($)</label><input type="number" min="1" id="docValor" required></div>
+                        <div class="form-group"><label>Peritaje técnico (PDF/JPG)</label><input type="file" id="docPeritaje" required></div>
                     </div>
                     <button type="submit" class="btn-primary">Enviar Documentación para Validación</button>
                 </form>
@@ -110,29 +120,84 @@
         </section>
     </main>
 
-    <!-- ========================================== -->
-    <!-- PIE DE PÁGINA (FOOTER)                    -->
-    <!-- ========================================== -->
+    <template id="filaVehiculo">
+        <tr>
+            <td>{{placa}}</td><td>{{vehiculo}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td>{{peritaje}}</td><td>{{tarifa}}</td>
+        </tr>
+    </template>
+
+    <template id="filaReservaProp">
+        <tr data-estado="{{estado}}">
+            <td>{{id}}</td><td>{{vehiculo}}</td><td>{{fechas}}</td><td>{{ingreso}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td class="acciones">
+                <button class="btn-action approve b-aprobar" onclick="responderReserva('{{id}}', true)">Aprobar</button>
+                <button class="btn-action reject b-rechazar" onclick="responderReserva('{{id}}', false)">Rechazar</button>
+                <button class="btn-action approve b-fotosok" onclick="revisarFotosEntrega('{{id}}', true)">Fotos OK</button>
+                <button class="btn-action reject b-danos" onclick="revisarFotosEntrega('{{id}}', false)">Hay daños</button>
+            </td>
+        </tr>
+    </template>
+
     <footer class="footer-corporate">
         <div class="footer-container">
-            <div class="social-icons">
-                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-            </div>
             <div class="footer-links">
                 <a href="#">Sobre Nosotros</a>
                 <a href="#">Términos del Servicio</a>
                 <a href="#">Preguntas Frecuentes</a>
                 <a href="#">Contáctanos</a>
             </div>
-            <div class="footer-legal">
-                <p>Legal glecer onna scair lirtis iteda obce rartator ia vehiculo pox testib atorma. Lite puca onumdo akar marteryra canera y cet pontar de tus cantos.</p>
-                <small>v0.1 — 2026 Alquiler de Vehículos P2P</small>
-            </div>
+            <div class="footer-legal"><small>v1.0 — 2026 Alquiler de Vehículos P2P</small></div>
         </div>
     </footer>
 
+    <!-- Ventana de acceso (los mensajes de error los escribe main.js) -->
+    <dialog id="dlgLogin" oncancel="cancelarLogin()">
+        <form id="formLogin" onsubmit="intentarLogin(event)">
+            <h3 id="loginTitulo"></h3>
+            <div class="form-group"><label>Usuario o correo</label><input type="text" id="loginUsuario" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="loginClave" required></div>
+            <p class="msg-error" id="loginMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="cancelarLogin()">Cancelar</button>
+                <button type="submit" class="btn-primary">Ingresar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Ventana de registro: el CSS muestra los campos según data-rol (CLIENTE o PROPIETARIO) -->
+    <dialog id="dlgRegistro">
+        <form id="formRegistro" onsubmit="enviarRegistro(event)">
+            <h3 class="solo-cliente">Crear cuenta como Conductor</h3>
+            <h3 class="solo-propietario">Crear cuenta como Propietario</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>Nombre completo</label><input type="text" id="regNombre" required></div>
+                <div class="form-group"><label>Documento de identidad</label><input type="text" id="regDocumento" required></div>
+                <div class="form-group"><label>Correo (será su usuario)</label><input type="email" id="regCorreo" required></div>
+                <div class="form-group"><label>Contraseña (mínimo 4 caracteres)</label><input type="password" id="regClave" required></div>
+                <div class="form-group"><label>Confirmar contraseña</label><input type="password" id="regClave2" required></div>
+                <div class="form-group"><label>Documento de identidad (PDF/JPG)</label><input type="file" id="regCedula"></div>
+                <div class="form-group solo-cliente"><label>Categoría de licencia</label>
+                    <select id="regLicencia"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>B3</option><option>C1</option><option>C2</option></select></div>
+                <div class="form-group solo-cliente"><label>Contacto de emergencia</label><input type="text" id="regContacto" placeholder="Nombre - Teléfono"></div>
+                <div class="form-group solo-cliente"><label>Licencia de conducción (PDF/JPG)</label><input type="file" id="regLicenciaArchivo"></div>
+                <div class="form-group solo-propietario"><label>Número de tarjeta de propiedad</label><input type="text" id="regTarjeta"></div>
+            </div>
+            <p class="msg-error" id="regMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="document.getElementById('dlgRegistro').close()">Cancelar</button>
+                <button type="submit" class="btn-primary">Crear cuenta</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Orden importante: primero los datos, luego las clases, al final el main -->
+    <script src="js/datos.js"></script>
+    <script src="js/Vehiculo.js"></script>
+    <script src="js/Reserva.js"></script>
+    <script src="js/Usuario.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
