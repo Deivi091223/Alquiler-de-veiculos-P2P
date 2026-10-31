@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones y Soporte - Alquiler de Vehículos P2P</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-pagina="soporte">
+
+    <header class="navbar-header">
+        <div class="nav-container">
+            <div class="logo-area">
+                <span class="badge-p2p">P2P</span>
+                <div class="logo-text">
+                    <h1>Alquiler de Vehículos P2P</h1>
+                    <small>PLATAFORMA DE VEHÍCULOS · V1.0</small>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html#inicio">Inicio</a>
+                <a href="index.html#catalogo">Catálogo</a>
+                <a href="index.html#beneficios">Beneficios</a>
+            </nav>
+            <div class="nav-actions">
+                <span class="sesion-activa" id="nombreSesion"></span>
+                <button class="btn-demo" id="btnCerrarSesion" onclick="cerrarSesion()" hidden>Cerrar sesión</button>
+                <div class="dropdown">
+                    <button class="btn-dropdown">Acceso Perfiles <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="abrirPerfil('CLIENTE'); return false;"><i class="fa-solid fa-user"></i> Perfil Conductor</a>
+                        <a href="#" onclick="abrirPerfil('PROPIETARIO'); return false;"><i class="fa-solid fa-car"></i> Perfil Propietario</a>
+                        <a href="#" onclick="abrirPerfil('ADMIN'); return false;"><i class="fa-solid fa-shield-halved"></i> Operaciones y Soporte</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn-register">Crear Cuenta <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="abrirRegistro('CLIENTE'); return false;">Como Conductor</a>
+                        <a href="#" onclick="abrirRegistro('PROPIETARIO'); return false;">Como Propietario</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="portal-soporte" class="panel-section">
+            <div class="panel-header-tag">PORTAL DEL ADMINISTRADOR</div>
+            <h2>Panel de Control Operativo y Moderación</h2>
+
+            <div class="alert-banner" id="alertaIncidentes" hidden>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span><strong>Alerta Activa:</strong> <span id="textoAlerta"></span></span>
+            </div>
+
+            <div class="admin-datagrid-box">
+                <h3>Validación Documental y Licencias</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Usuario / Vehículo</th><th>Tipo de Documento</th><th>Estado</th><th>Acciones / Motivo</th></tr></thead>
+                    <tbody id="tablaDocumentos"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="admin-datagrid-box section-gap">
+                <h3>Incidentes y Expedientes</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Incidente</th><th>Reserva</th><th>Evento</th><th>Expediente</th><th>Acción</th></tr></thead>
+                    <tbody id="tablaIncidentes"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="admin-datagrid-box section-gap">
+                <h3>Contratos Activos</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Reserva</th><th>Vehículo</th><th>Cliente</th><th>Estado</th><th>Acción</th></tr></thead>
+                    <tbody id="tablaContratos"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="admin-datagrid-box section-gap">
+                <h3>Cuentas de Usuario</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Nombre</th><th>Usuario</th><th>Perfil</th><th>Estado</th><th>Acción</th></tr></thead>
+                    <tbody id="tablaCuentas"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="section-gap">
+                <button class="btn-secondary" onclick="revisarVigencias()">Revisar vigencia de peritajes</button>
+            </div>
+        </section>
+    </main>
+
+    <template id="filaDocumento">
+        <tr data-estado="{{estado}}">
+            <td>{{titular}}</td><td>{{tipo}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td class="acciones">
+                {{motivo}}
+                <button class="btn-action approve b-aprobar" onclick="aprobarDoc('{{id}}')">Aprobar</button>
+                <button class="btn-action reject b-rechazar" onclick="rechazarDoc('{{id}}')">Rechazar</button>
+            </td>
+        </tr>
+    </template>
+
+    <template id="filaIncidente">
+        <tr data-estado="{{expediente}}">
+            <td>{{id}}</td><td>{{reserva}}</td><td>{{evento}}</td><td>{{expediente}}</td>
+            <td class="acciones"><button class="btn-action warn b-escalar" onclick="escalarIncidente('{{id}}')">Escalar a aseguradora</button></td>
+        </tr>
+    </template>
+
+    <template id="filaContrato">
+        <tr>
+            <td>{{id}}</td><td>{{vehiculo}}</td><td>{{cliente}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td><button class="btn-action reject" onclick="inmovilizar('{{id}}')">Inmovilizar contrato</button></td>
+        </tr>
+    </template>
+
+    <template id="filaCuenta">
+        <tr data-bloqueada="{{bloqueada}}">
+            <td>{{nombre}}</td><td>{{usuario}}</td><td>{{perfil}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span> {{detalle}}</td>
+            <td class="acciones"><button class="btn-action approve b-desbloquear" onclick="desbloquear('{{id}}')">Desbloquear</button></td>
+        </tr>
+    </template>
+
+    <footer class="footer-corporate">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="#">Sobre Nosotros</a>
+                <a href="#">Términos del Servicio</a>
+                <a href="#">Preguntas Frecuentes</a>
+                <a href="#">Contáctanos</a>
+            </div>
+            <div class="footer-legal"><small>v1.0 — 2026 Alquiler de Vehículos P2P</small></div>
+        </div>
+    </footer>
+
+    <!-- Ventana de acceso (los mensajes de error los escribe main.js) -->
+    <dialog id="dlgLogin" oncancel="cancelarLogin()">
+        <form id="formLogin" onsubmit="intentarLogin(event)">
+            <h3 id="loginTitulo"></h3>
+            <div class="form-group"><label>Usuario o correo</label><input type="text" id="loginUsuario" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="loginClave" required></div>
+            <p class="msg-error" id="loginMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="cancelarLogin()">Cancelar</button>
+                <button type="submit" class="btn-primary">Ingresar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Ventana de registro: el CSS muestra los campos según data-rol (CLIENTE o PROPIETARIO) -->
+    <dialog id="dlgRegistro">
+        <form id="formRegistro" onsubmit="enviarRegistro(event)">
+            <h3 class="solo-cliente">Crear cuenta como Conductor</h3>
+            <h3 class="solo-propietario">Crear cuenta como Propietario</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>Nombre completo</label><input type="text" id="regNombre" required></div>
+                <div class="form-group"><label>Documento de identidad</label><input type="text" id="regDocumento" required></div>
+                <div class="form-group"><label>Correo (será su usuario)</label><input type="email" id="regCorreo" required></div>
+                <div class="form-group"><label>Contraseña (mínimo 4 caracteres)</label><input type="password" id="regClave" required></div>
+                <div class="form-group"><label>Confirmar contraseña</label><input type="password" id="regClave2" required></div>
+                <div class="form-group"><label>Documento de identidad (PDF/JPG)</label><input type="file" id="regCedula"></div>
+                <div class="form-group solo-cliente"><label>Categoría de licencia</label>
+                    <select id="regLicencia"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>B3</option><option>C1</option><option>C2</option></select></div>
+                <div class="form-group solo-cliente"><label>Contacto de emergencia</label><input type="text" id="regContacto" placeholder="Nombre - Teléfono"></div>
+                <div class="form-group solo-cliente"><label>Licencia de conducción (PDF/JPG)</label><input type="file" id="regLicenciaArchivo"></div>
+                <div class="form-group solo-propietario"><label>Número de tarjeta de propiedad</label><input type="text" id="regTarjeta"></div>
+            </div>
+            <p class="msg-error" id="regMensaje"></p>
+            <div class="modal-botones">
+                <button type="button" class="btn-demo" onclick="document.getElementById('dlgRegistro').close()">Cancelar</button>
+                <button type="submit" class="btn-primary">Crear cuenta</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Orden importante: primero los datos, luego las clases, al final el main -->
+    <script src="js/datos.js"></script>
+    <script src="js/Vehiculo.js"></script>
+    <script src="js/Reserva.js"></script>
+    <script src="js/Usuario.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

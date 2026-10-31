@@ -43,6 +43,19 @@ Lograr más de 500 reservas efectivas sin incidencias no cubiertas durante el pr
 
 > Quedan fuera de este alcance: pasarelas de pago reales (se simulan) y detección automática de daños con IA.
 
+## Credenciales de acceso de demostración
+
+Estas cuentas de prueba se crean al cargar la aplicación por primera vez en el navegador:
+
+| Perfil | Usuario o correo | Contraseña |
+|---|---|---|
+| Conductor — Carlos Pérez | `carlos.perez@email.com` | `1234` |
+| Conductor — J. Restrepo | `j.restrepo@email.com` | `1234` |
+| Propietario — Mateo Gómez | `mateo.gomez@email.com` | `1234` |
+| Operaciones y Soporte — Sofía Ramírez | `soporte` | `soporte2026` |
+
+Los datos se guardan en el almacenamiento local del navegador. Si ya hay datos guardados, las cuentas de demostración no se vuelven a crear automáticamente.
+
 ## Integrantes
 
 - Vanegas Gutierrez David
