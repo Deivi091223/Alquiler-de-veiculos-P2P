@@ -101,7 +101,7 @@
          La FOTO se busca en la carpeta "vehiculos" con el nombre de la placa: vehiculos/ABC-12D.jpg
          ===================================================== -->
     <template id="tarjeta">
-        <article class="vehicle-card">
+        <article class="vehicle-card" onclick="elegirVehiculo('{{id}}')">
             <div class="car-img-placeholder">
                 <img src="vehiculos/{{placa}}.jpg" alt="{{nombre}}" onerror="this.style.display='none'">
                 <span class="price-tag">{{precio}}/día</span>
@@ -113,7 +113,7 @@
                     <span class="badge" data-estado="{{estado}}">{{estado}}</span>
                     <span class="badge" data-estado="{{peritajeEstado}}">{{peritaje}}</span>
                 </div>
-                <a class="btn-link" href="conductor.html?vehiculo={{id}}&inicio={{inicio}}&fin={{fin}}">Reservar</a>
+                <button class="btn-link">Reservar</button>
             </div>
         </article>
     </template>
@@ -168,6 +168,17 @@
                 <button type="submit" class="btn-primary">Crear cuenta</button>
             </div>
         </form>
+    </dialog>
+
+    <!-- Ventana que aparece al hacer clic en un vehículo sin sesión de conductor -->
+    <dialog id="dlgAcceso">
+        <h3>Para reservar necesitas una cuenta</h3>
+        <p id="accesoVehiculo"></p>
+        <div class="modal-botones">
+            <button type="button" class="btn-demo" onclick="document.getElementById('dlgAcceso').close()">Cancelar</button>
+            <button type="button" class="btn-secondary" onclick="accesoCrearCuenta()">Crear cuenta</button>
+            <button type="button" class="btn-primary" onclick="accesoIniciarSesion()">Iniciar sesión como conductor</button>
+        </div>
     </dialog>
 
     <!-- Orden importante: primero los datos, luego las clases, al final el main -->

@@ -633,3 +633,5 @@ tr[data-estado="Pendiente"] .b-aprobar, tr[data-estado="Pendiente"] .b-rechazar,
 tr[data-estado="Por validar"] .b-fotosok, tr[data-estado="Por validar"] .b-danos,
 tr[data-estado="Generado"] .b-escalar,
 tr[data-bloqueada="si"] .b-desbloquear { display: inline-block; }
+
+.vehicle-card { cursor: pointer; }
