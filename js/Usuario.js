@@ -229,6 +229,10 @@ class Administrador extends Usuario {
         doc.estado = aprobar ? "Aprobado" : "Rechazado";
         doc.motivo = motivo || "";
 
+        // Bitácora de auditoría: quién revisó el documento y cuándo
+        doc.revisadoPor = this.nombre;
+        doc.fechaRevision = new Date().toLocaleString("es-CO");
+
         if (doc.tipo === "Peritaje" || doc.tipo === "Tarjeta de propiedad") {
             const vehiculo = buscarVehiculo(doc.titularId);
             if (doc.tipo === "Peritaje") {

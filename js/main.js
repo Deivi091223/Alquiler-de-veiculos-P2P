@@ -389,6 +389,7 @@ function nombreTitular(doc) {
 
 function mostrarSoporte() {
     let filasDocs = "";
+    let filasAuditoria = "";
     let filasIncidentes = "";
     let filasContratos = "";
     let filasCuentas = "";
@@ -396,6 +397,15 @@ function mostrarSoporte() {
 
     for (const d of documentos.slice().reverse()) {
         filasDocs += llenar("filaDocumento", { id: d.id, titular: nombreTitular(d), tipo: d.tipo, estado: d.estado, motivo: d.motivo });
+    }
+    // Muestra primero las revisiones más recientes y omite documentos sin revisar.
+    for (const d of documentos.slice().reverse()) {
+        if (d.revisadoPor) {
+            filasAuditoria += llenar("filaAuditoria", {
+                titular: nombreTitular(d), tipo: d.tipo, estado: d.estado,
+                motivo: d.motivo || "—", revisor: d.revisadoPor, fecha: d.fechaRevision
+            });
+        }
     }
     for (const r of reservas) {
         for (const i of r.incidentes) {
@@ -419,6 +429,7 @@ function mostrarSoporte() {
     }
 
     pintar("tablaDocumentos", filasDocs);
+    pintar("tablaAuditoria", filasAuditoria);
     pintar("tablaIncidentes", filasIncidentes);
     pintar("tablaContratos", filasContratos);
     pintar("tablaCuentas", filasCuentas);

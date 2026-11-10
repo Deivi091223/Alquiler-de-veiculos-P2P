@@ -28,7 +28,8 @@ function seSolapan(inicio1, fin1, inicio2, fin2) {
 function crearDocumento(tipo, titularId, archivo, referenciaId, estado) {
     documentos.push({
         id: nuevoId("DOC"), tipo: tipo, titularId: titularId, referenciaId: referenciaId,
-        archivo: archivo, estado: estado || "Pendiente", motivo: ""
+        archivo: archivo, estado: estado || "Pendiente", motivo: "",
+        revisadoPor: "", fechaRevision: ""
     });
 }
 
