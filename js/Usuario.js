@@ -201,6 +201,27 @@ class Propietario extends Usuario {
             resenas: resenas
         };
     }
+
+    // Ganancias filtradas. filtros = { desde, hasta, vehiculoId }; un filtro vacío no se aplica.
+    // Solo cuentan reservas Finalizadas; el ingreso es la tarifa de alquiler (la comisión no es del propietario).
+    calcularGanancias(filtros) {
+        const lista = [];
+        let total = 0;
+        for (const r of this.misReservas()) {
+            if (r.estado !== "Finalizada") continue;
+            if (filtros.vehiculoId && r.vehiculoId !== filtros.vehiculoId) continue;
+            if (filtros.desde && r.fechaFin < filtros.desde) continue;
+            if (filtros.hasta && r.fechaFin > filtros.hasta) continue;
+            lista.push(r);
+            total += r.pago.subtotalAlquiler;
+        }
+        return {
+            total: total,
+            cantidad: lista.length,
+            promedio: lista.length > 0 ? Math.round(total / lista.length) : 0,
+            reservas: lista
+        };
+    }
 }
 
 class Administrador extends Usuario {
@@ -228,6 +249,10 @@ class Administrador extends Usuario {
 
         doc.estado = aprobar ? "Aprobado" : "Rechazado";
         doc.motivo = motivo || "";
+
+        // Bitácora de auditoría: quién revisó el documento y cuándo
+        doc.revisadoPor = this.nombre;
+        doc.fechaRevision = new Date().toLocaleString("es-CO");
 
         if (doc.tipo === "Peritaje" || doc.tipo === "Tarjeta de propiedad") {
             const vehiculo = buscarVehiculo(doc.titularId);

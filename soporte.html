@@ -66,6 +66,16 @@
             </div>
 
             <div class="admin-datagrid-box section-gap">
+                <h3>Historial de Auditoría</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Titular</th><th>Documento</th><th>Decisión</th><th>Motivo</th><th>Revisado por</th><th>Fecha y hora</th></tr></thead>
+                    <tbody id="tablaAuditoria"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="admin-datagrid-box section-gap">
                 <h3>Incidentes y Expedientes</h3>
                 <div class="table-scroll">
                 <table class="data-table">
@@ -110,6 +120,14 @@
                 <button class="btn-action approve b-aprobar" onclick="aprobarDoc('{{id}}')">Aprobar</button>
                 <button class="btn-action reject b-rechazar" onclick="rechazarDoc('{{id}}')">Rechazar</button>
             </td>
+        </tr>
+    </template>
+
+    <template id="filaAuditoria">
+        <tr>
+            <td>{{titular}}</td><td>{{tipo}}</td>
+            <td><span class="badge" data-estado="{{estado}}">{{estado}}</span></td>
+            <td>{{motivo}}</td><td>{{revisor}}</td><td>{{fecha}}</td>
         </tr>
     </template>
 

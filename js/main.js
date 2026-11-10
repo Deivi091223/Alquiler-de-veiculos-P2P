@@ -55,6 +55,7 @@ let rolLogin = "";
 let alExito = null;
 let esObligatorio = false;
 let rolRegistro = "";
+let destinoReserva = "";   // a dónde ir cuando el conductor ya tenga sesión
 
 // La sesión se guarda en sessionStorage: termina al cerrar la pestaña
 function sesionActiva() { return buscarUsuario(sessionStorage.getItem("p2p_sesion")); }
@@ -147,6 +148,8 @@ function enviarRegistro(evento) {
     }
     document.getElementById("dlgRegistro").close();
     alert("Cuenta creada. Sus documentos quedan pendientes de verificación por Operaciones y Soporte.\nYa puede ingresar desde \"Acceso Perfiles\" con su correo y contraseña.");
+    // Si venía de elegir un vehículo, le pedimos el login para que continúe
+    if (rolRegistro === "CLIENTE" && destinoReserva) mostrarLogin("CLIENTE", () => location.href = destinoReserva, false);
 }
 
 // Muestra el nombre de quien tiene sesión y el botón para cerrarla
@@ -171,6 +174,29 @@ function buscar() {
         ubicacion: valor("buscarUbicacion"), tipo: categoria[0], subcategoria: categoria[1],
         inicio: valor("buscarInicio"), fin: valor("buscarFin")
     }));
+}
+
+// Clic en un vehículo: con sesión de conductor va a reservar; sin sesión pregunta qué hacer
+function elegirVehiculo(id) {
+    destinoReserva = "conductor.html?vehiculo=" + id + "&inicio=" + valor("buscarInicio") + "&fin=" + valor("buscarFin");
+    const u = sesionActiva();
+    if (u && u.rol === "CLIENTE") {
+        location.href = destinoReserva;
+        return;
+    }
+    const v = buscarVehiculo(id);
+    poner("accesoVehiculo", v.marca + " " + v.modelo + " " + v.anio + " · " + dinero(v.tarifaDiaria) + "/día");
+    document.getElementById("dlgAcceso").showModal();
+}
+
+function accesoIniciarSesion() {
+    document.getElementById("dlgAcceso").close();
+    mostrarLogin("CLIENTE", () => location.href = destinoReserva, false);
+}
+
+function accesoCrearCuenta() {
+    document.getElementById("dlgAcceso").close();
+    abrirRegistro("CLIENTE");
 }
 
 // La tarjeta (con su imagen) está en la plantilla "tarjeta" de index.html
@@ -301,8 +327,12 @@ function mostrarPropietario() {
             tarifa: dinero(v.tarifaDiaria) + " (recomendado " + dinero(v.obtenerPrecioRecomendado()) + ")"
         });
     }
+    const vehiculoGanancias = valor("selGananciasVehiculo");
     llenarSelect("selDocVehiculo", lista);
     llenarSelect("selBloqueoVehiculo", lista);
+    // Se conserva la selección del filtro cuando se vuelve a dibujar el portal.
+    llenarSelect("selGananciasVehiculo", [{ valor: "", texto: "Todos los vehículos" }].concat(lista));
+    document.getElementById("selGananciasVehiculo").value = vehiculoGanancias;
     pintar("tablaVehiculos", filasVehiculos);
 
     let filasReservas = "";
@@ -313,6 +343,37 @@ function mostrarPropietario() {
         });
     }
     pintar("tablaReservas", filasReservas);
+    filtrarGanancias();
+}
+
+// Lee los filtros, pide el cálculo a la clase Propietario y pinta el resumen y la tabla.
+function filtrarGanancias() {
+    const filtros = { desde: valor("gananDesde"), hasta: valor("gananHasta"), vehiculoId: valor("selGananciasVehiculo") };
+    if (filtros.desde && filtros.hasta && filtros.desde > filtros.hasta) {
+        alert("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+        return;
+    }
+    const g = usuarioActual.calcularGanancias(filtros);
+    poner("gananTotal", dinero(g.total));
+    poner("gananCantidad", g.cantidad);
+    poner("gananPromedio", dinero(g.promedio));
+
+    let filas = "";
+    for (const r of g.reservas.slice().reverse()) {
+        filas += llenar("filaGanancia", {
+            id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), fechas: r.fechaInicio + " a " + r.fechaFin,
+            ingreso: dinero(r.pago.subtotalAlquiler)
+        });
+    }
+    pintar("tablaGanancias", filas);
+}
+
+// Deja los filtros vacíos y vuelve a mostrar todas las ganancias.
+function limpiarFiltrosGanancias() {
+    document.getElementById("gananDesde").value = "";
+    document.getElementById("gananHasta").value = "";
+    document.getElementById("selGananciasVehiculo").value = "";
+    filtrarGanancias();
 }
 
 function responderReserva(id, aprobar) {
@@ -363,6 +424,7 @@ function nombreTitular(doc) {
 
 function mostrarSoporte() {
     let filasDocs = "";
+    let filasAuditoria = "";
     let filasIncidentes = "";
     let filasContratos = "";
     let filasCuentas = "";
@@ -370,6 +432,15 @@ function mostrarSoporte() {
 
     for (const d of documentos.slice().reverse()) {
         filasDocs += llenar("filaDocumento", { id: d.id, titular: nombreTitular(d), tipo: d.tipo, estado: d.estado, motivo: d.motivo });
+    }
+    // Muestra primero las revisiones más recientes y omite documentos sin revisar.
+    for (const d of documentos.slice().reverse()) {
+        if (d.revisadoPor) {
+            filasAuditoria += llenar("filaAuditoria", {
+                titular: nombreTitular(d), tipo: d.tipo, estado: d.estado,
+                motivo: d.motivo || "—", revisor: d.revisadoPor, fecha: d.fechaRevision
+            });
+        }
     }
     for (const r of reservas) {
         for (const i of r.incidentes) {
@@ -393,6 +464,7 @@ function mostrarSoporte() {
     }
 
     pintar("tablaDocumentos", filasDocs);
+    pintar("tablaAuditoria", filasAuditoria);
     pintar("tablaIncidentes", filasIncidentes);
     pintar("tablaContratos", filasContratos);
     pintar("tablaCuentas", filasCuentas);
