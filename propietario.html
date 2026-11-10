@@ -73,6 +73,30 @@
             </div>
 
             <div class="document-upload-box section-gap">
+                <h3>Mis Ganancias</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Desde (fecha de fin de la reserva)</label><input type="date" id="gananDesde"></div>
+                    <div class="form-group"><label>Hasta</label><input type="date" id="gananHasta"></div>
+                    <div class="form-group"><label>Vehículo</label><select id="selGananciasVehiculo"></select></div>
+                </div>
+                <button class="btn-primary" onclick="filtrarGanancias()">Filtrar</button>
+                <button class="btn-demo" onclick="limpiarFiltrosGanancias()">Limpiar filtros</button>
+
+                <div class="metrics-grid section-gap">
+                    <div class="metric-card"><span>TOTAL GANADO</span><h3 id="gananTotal"></h3><small>Reservas finalizadas en el filtro</small></div>
+                    <div class="metric-card"><span>RESERVAS FINALIZADAS</span><h3 id="gananCantidad"></h3><small>Cantidad en el filtro</small></div>
+                    <div class="metric-card"><span>PROMEDIO POR RESERVA</span><h3 id="gananPromedio"></h3><small>Total entre reservas</small></div>
+                </div>
+
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Reserva</th><th>Vehículo</th><th>Fechas</th><th>Ingreso</th></tr></thead>
+                    <tbody id="tablaGanancias"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="document-upload-box section-gap">
                 <h3>Gestionar Disponibilidad (bloquear fechas)</h3>
                 <div class="form-grid">
                     <div class="form-group"><label>Vehículo</label><select id="selBloqueoVehiculo"></select></div>
@@ -139,6 +163,10 @@
                 <button class="btn-action reject b-danos" onclick="revisarFotosEntrega('{{id}}', false)">Hay daños</button>
             </td>
         </tr>
+    </template>
+
+    <template id="filaGanancia">
+        <tr><td>{{id}}</td><td>{{vehiculo}}</td><td>{{fechas}}</td><td>{{ingreso}}</td></tr>
     </template>
 
     <footer class="footer-corporate">

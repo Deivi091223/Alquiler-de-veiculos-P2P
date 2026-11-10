@@ -327,8 +327,12 @@ function mostrarPropietario() {
             tarifa: dinero(v.tarifaDiaria) + " (recomendado " + dinero(v.obtenerPrecioRecomendado()) + ")"
         });
     }
+    const vehiculoGanancias = valor("selGananciasVehiculo");
     llenarSelect("selDocVehiculo", lista);
     llenarSelect("selBloqueoVehiculo", lista);
+    // Se conserva la selección del filtro cuando se vuelve a dibujar el portal.
+    llenarSelect("selGananciasVehiculo", [{ valor: "", texto: "Todos los vehículos" }].concat(lista));
+    document.getElementById("selGananciasVehiculo").value = vehiculoGanancias;
     pintar("tablaVehiculos", filasVehiculos);
 
     let filasReservas = "";
@@ -339,6 +343,37 @@ function mostrarPropietario() {
         });
     }
     pintar("tablaReservas", filasReservas);
+    filtrarGanancias();
+}
+
+// Lee los filtros, pide el cálculo a la clase Propietario y pinta el resumen y la tabla.
+function filtrarGanancias() {
+    const filtros = { desde: valor("gananDesde"), hasta: valor("gananHasta"), vehiculoId: valor("selGananciasVehiculo") };
+    if (filtros.desde && filtros.hasta && filtros.desde > filtros.hasta) {
+        alert("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+        return;
+    }
+    const g = usuarioActual.calcularGanancias(filtros);
+    poner("gananTotal", dinero(g.total));
+    poner("gananCantidad", g.cantidad);
+    poner("gananPromedio", dinero(g.promedio));
+
+    let filas = "";
+    for (const r of g.reservas.slice().reverse()) {
+        filas += llenar("filaGanancia", {
+            id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), fechas: r.fechaInicio + " a " + r.fechaFin,
+            ingreso: dinero(r.pago.subtotalAlquiler)
+        });
+    }
+    pintar("tablaGanancias", filas);
+}
+
+// Deja los filtros vacíos y vuelve a mostrar todas las ganancias.
+function limpiarFiltrosGanancias() {
+    document.getElementById("gananDesde").value = "";
+    document.getElementById("gananHasta").value = "";
+    document.getElementById("selGananciasVehiculo").value = "";
+    filtrarGanancias();
 }
 
 function responderReserva(id, aprobar) {
