@@ -426,6 +426,7 @@ function mostrarSoporte() {
     let filasDocs = "";
     let filasAuditoria = "";
     let filasIncidentes = "";
+    let filasDisputas = "";
     let filasContratos = "";
     let filasCuentas = "";
     let porEscalar = 0;
@@ -453,6 +454,17 @@ function mostrarSoporte() {
             filasContratos += llenar("filaContrato", { id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), cliente: buscarUsuario(r.clienteId).nombre, estado: r.estado });
         }
     }
+    // Disputas: reservas "En disputa", con las fotos de recepción y entrega para compararlas
+    for (const r of reservas) {
+        if (r.estado === "En disputa") {
+            filasDisputas += llenar("filaDisputa", {
+                id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), cliente: buscarUsuario(r.clienteId).nombre,
+                fotosRecepcion: r.fotos.filter(f => f.tipo === "Recepción").map(f => f.nombre).join(", "),
+                fotosEntrega: r.fotos.filter(f => f.tipo === "Entrega").map(f => f.nombre).join(", "),
+                deposito: dinero(r.pago.depositoGarantia) + " (" + r.pago.estadoDeposito + ")"
+            });
+        }
+    }
     for (const u of usuarios) {
         const bloqueada = u.estaBloqueado();
         filasCuentas += llenar("filaCuenta", {
@@ -466,6 +478,7 @@ function mostrarSoporte() {
     pintar("tablaDocumentos", filasDocs);
     pintar("tablaAuditoria", filasAuditoria);
     pintar("tablaIncidentes", filasIncidentes);
+    pintar("tablaDisputas", filasDisputas);
     pintar("tablaContratos", filasContratos);
     pintar("tablaCuentas", filasCuentas);
     document.getElementById("alertaIncidentes").hidden = porEscalar === 0;
@@ -483,6 +496,13 @@ function rechazarDoc(id) {
 
 function escalarIncidente(id) {
     ejecutar(() => usuarioActual.escalarSiniestro(id), "Expediente escalado a la aseguradora. Depósito congelado", mostrarSoporte);
+}
+
+// Pide el motivo y resuelve la disputa a favor del cliente (true) o del propietario (false)
+function resolverDisputaA(id, aFavorCliente) {
+    const motivo = prompt("Motivo de la resolución:");
+    if (motivo) ejecutar(() => usuarioActual.resolverDisputa(id, aFavorCliente, motivo),
+        aFavorCliente ? "Disputa resuelta. Depósito liberado al cliente" : "Disputa resuelta. Depósito retenido a favor del propietario", mostrarSoporte);
 }
 
 function inmovilizar(id) {

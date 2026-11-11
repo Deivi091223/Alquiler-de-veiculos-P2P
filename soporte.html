@@ -86,6 +86,16 @@
             </div>
 
             <div class="admin-datagrid-box section-gap">
+                <h3>Disputas por Resolver</h3>
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Reserva</th><th>Vehículo</th><th>Cliente</th><th>Fotos de recepción</th><th>Fotos de entrega</th><th>Depósito</th><th>Resolver</th></tr></thead>
+                    <tbody id="tablaDisputas"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="admin-datagrid-box section-gap">
                 <h3>Contratos Activos</h3>
                 <div class="table-scroll">
                 <table class="data-table">
@@ -135,6 +145,17 @@
         <tr data-estado="{{expediente}}">
             <td>{{id}}</td><td>{{reserva}}</td><td>{{evento}}</td><td>{{expediente}}</td>
             <td class="acciones"><button class="btn-action warn b-escalar" onclick="escalarIncidente('{{id}}')">Escalar a aseguradora</button></td>
+        </tr>
+    </template>
+
+    <template id="filaDisputa">
+        <tr>
+            <td>{{id}}</td><td>{{vehiculo}}</td><td>{{cliente}}</td>
+            <td>{{fotosRecepcion}}</td><td>{{fotosEntrega}}</td><td>{{deposito}}</td>
+            <td>
+                <button class="btn-action approve" onclick="resolverDisputaA('{{id}}', true)">Liberar al cliente</button>
+                <button class="btn-action reject" onclick="resolverDisputaA('{{id}}', false)">Retener al propietario</button>
+            </td>
         </tr>
     </template>
 

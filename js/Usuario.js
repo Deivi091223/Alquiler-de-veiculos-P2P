@@ -305,6 +305,21 @@ class Administrador extends Usuario {
         reserva.pago.congelarDeposito();
         guardarDatos();
     }
+
+    // Cierra una disputa: decide a favor del cliente o del propietario y deja la reserva Finalizada
+    resolverDisputa(reservaId, aFavorCliente, motivo) {
+        const reserva = buscarReserva(reservaId);
+        if (!reserva || reserva.estado !== "En disputa") throw new Error("La reserva no está en disputa");
+        if (!motivo) throw new Error("Debe indicar el motivo de la resolución");
+        reserva.pago.resolverDeposito(aFavorCliente);
+        // Se guarda quién resolvió y cuándo, para la trazabilidad
+        reserva.resolucion = {
+            decision: aFavorCliente ? "A favor del cliente" : "A favor del propietario",
+            motivo: motivo, resueltoPor: this.nombre, fecha: new Date().toLocaleString("es-CO")
+        };
+        reserva.estado = "Finalizada";   // libera el calendario
+        guardarDatos();
+    }
 }
 
 const clasesUsuario = { CLIENTE: Cliente, PROPIETARIO: Propietario, ADMIN: Administrador };

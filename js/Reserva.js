@@ -32,6 +32,12 @@ class Pago {
         this.estado = "Reembolsado";
         this.liberarDeposito();
     }
+
+    // Resuelve el depósito congelado de una disputa (liberarDeposito solo funciona si está "Retenido")
+    resolverDeposito(aFavorCliente) {
+        if (this.estadoDeposito !== "Congelado") throw new Error("El depósito no está congelado");
+        this.estadoDeposito = aFavorCliente ? "Liberado" : "Retenido por daños";
+    }
 }
 
 class Poliza {
