@@ -17,7 +17,12 @@ function buscarUsuario(id) { return usuarios.find(u => u.id === id); }
 function buscarVehiculo(id) { return vehiculos.find(v => v.id === id); }
 function buscarReserva(id) { return reservas.find(r => r.id === id); }
 
-function hoy() { return new Date().toISOString().slice(0, 10); }
+// Fecha de hoy según la hora LOCAL (no UTC), en formato AAAA-MM-DD.
+// toISOString() usa hora UTC y en Colombia, después de las 7 pm, daría el día siguiente.
+function hoy() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
 function dinero(n) { return "$" + Math.round(n).toLocaleString("es-CO"); }
 
 // Dos rangos de fechas se solapan si cada uno empieza antes de que el otro termine
