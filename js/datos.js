@@ -17,11 +17,15 @@ function buscarUsuario(id) { return usuarios.find(u => u.id === id); }
 function buscarVehiculo(id) { return vehiculos.find(v => v.id === id); }
 function buscarReserva(id) { return reservas.find(r => r.id === id); }
 
+// Convierte un objeto Date a texto AAAA-MM-DD usando la hora LOCAL (no UTC).
+function fechaLocal(fecha) {
+    return fecha.getFullYear() + "-" + String(fecha.getMonth() + 1).padStart(2, "0") + "-" + String(fecha.getDate()).padStart(2, "0");
+}
+
 // Fecha de hoy según la hora LOCAL (no UTC), en formato AAAA-MM-DD.
 // toISOString() usa hora UTC y en Colombia, después de las 7 pm, daría el día siguiente.
 function hoy() {
-    const d = new Date();
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    return fechaLocal(new Date());
 }
 function dinero(n) { return "$" + Math.round(n).toLocaleString("es-CO"); }
 
@@ -64,7 +68,7 @@ function cargarDatos() {
 function haceMeses(n) {
     const fecha = new Date();
     fecha.setMonth(fecha.getMonth() - n);
-    return fecha.toISOString().slice(0, 10);
+    return fechaLocal(fecha);
 }
 
 function crearDatosDemo() {
@@ -99,7 +103,7 @@ function crearDatosDemo() {
         propietarioId: mateo.id, tarjetaAprobada: true,
         // este peritaje vence en 20 días
         peritajes: [{ fecha: haceMeses(11), valorComercial: 12000000, dictamen: "Aprobado",
-                      fechaVencimiento: new Date(Date.now() + 20 * 86400000).toISOString().slice(0, 10) }]
+                      fechaVencimiento: fechaLocal(new Date(Date.now() + 20 * 86400000)) }]
     }));
     vehiculos.forEach(v => v.activarSiCorresponde());
     guardarDatos();

@@ -8,9 +8,11 @@ class Peritaje {
         this.dictamen = "Pendiente";   // Pendiente | Aprobado | Rechazado
         Object.assign(this, datos);
         if (!this.fechaVencimiento) {  // el peritaje dura 1 año
-            const vence = new Date(this.fecha);
+            // Separa la fecha guardada para crearla a medianoche en hora local y evitar cambios UTC.
+            const [anio, mes, dia] = this.fecha.split("-").map(Number);
+            const vence = new Date(anio, mes - 1, dia);
             vence.setFullYear(vence.getFullYear() + 1);
-            this.fechaVencimiento = vence.toISOString().slice(0, 10);
+            this.fechaVencimiento = fechaLocal(vence);
         }
     }
 
@@ -61,7 +63,8 @@ class Vehiculo {
 
     diasParaVencerPeritaje() {
         const p = this.peritajeVigente();
-        return p ? Math.ceil((new Date(p.fechaVencimiento) - new Date()) / 86400000) : 0;
+        // Compara solo fechas para que la hora actual no altere los días restantes.
+        return p ? Math.round((new Date(p.fechaVencimiento) - new Date(hoy())) / 86400000) : 0;
     }
 
     // Activo solo si la tarjeta de propiedad y el peritaje están aprobados y vigentes
