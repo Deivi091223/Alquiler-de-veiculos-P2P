@@ -71,7 +71,7 @@ Quedan fuera de este alcance: pasarelas de pago reales (se simulan) y detección
 
 ## Estructura del proyecto
 
-- `Index.html`: catálogo y búsqueda.
+- `index.html`: catálogo y búsqueda.
 - `conductor.html`, `propietario.html`, `soporte.html`: portales de cada perfil.
 - `styles.css`: estilos de todo el sitio.
 - `js/datos.js`: variables globales, datos de demostración y guardado en el navegador.
@@ -84,7 +84,7 @@ Quedan fuera de este alcance: pasarelas de pago reales (se simulan) y detección
 ## Cómo ejecutar
 
 1. Abrir la carpeta del proyecto en Visual Studio Code.
-2. Abrir `Index.html` con la extensión Live Server (o directamente en el navegador).
+2. Abrir `index.html` con la extensión Live Server (o directamente en el navegador).
 3. Ingresar con las credenciales de demostración de abajo.
 4. Los datos se guardan en el navegador. Para reiniciar los datos de demostración: F12 → Application → Local Storage → Clear, y recargar la página.
 
