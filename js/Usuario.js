@@ -306,18 +306,30 @@ class Administrador extends Usuario {
         guardarDatos();
     }
 
-    // Cierra una disputa: decide a favor del cliente o del propietario y deja la reserva Finalizada
-    resolverDisputa(reservaId, aFavorCliente, motivo) {
+    // Resuelve una disputa según el beneficiario y exige un motivo para registrar la decisión.
+    resolverDisputa(reservaId, aFavorDe, motivo) {
         const reserva = buscarReserva(reservaId);
-        if (!reserva || reserva.estado !== "En disputa") throw new Error("La reserva no está en disputa");
-        if (!motivo) throw new Error("Debe indicar el motivo de la resolución");
-        reserva.pago.resolverDeposito(aFavorCliente);
-        // Se guarda quién resolvió y cuándo, para la trazabilidad
+        if (!reserva) throw new Error("Reserva no encontrada");
+        if (reserva.estado !== "En disputa") throw new Error("La reserva no está en disputa");
+        if (!motivo) throw new Error("Debe indicar el motivo de la decisión");
+        if (aFavorDe !== "CLIENTE" && aFavorDe !== "PROPIETARIO") throw new Error("La decisión no es válida");
+
+        // Cambia el depósito congelado según la decisión de Soporte.
+        if (aFavorDe === "CLIENTE") {
+            reserva.pago.devolverDepositoCongelado();
+        } else {
+            reserva.pago.retenerDepositoPropietario();
+        }
+
+        // Guarda el motivo, responsable y fecha para dejar constancia de la resolución.
         reserva.resolucion = {
-            decision: aFavorCliente ? "A favor del cliente" : "A favor del propietario",
-            motivo: motivo, resueltoPor: this.nombre, fecha: new Date().toLocaleString("es-CO")
+            aFavorDe: aFavorDe,
+            motivo: motivo,
+            decididoPor: this.nombre,
+            fecha: new Date().toLocaleString("es-CO")
         };
-        reserva.estado = "Finalizada";   // libera el calendario
+        // Finalizar la reserva libera sus fechas y permite calcular ganancias y calificaciones.
+        reserva.estado = "Finalizada";
         guardarDatos();
     }
 }

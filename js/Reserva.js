@@ -28,6 +28,16 @@ class Pago {
         if (this.estadoDeposito === "Retenido") this.estadoDeposito = "Congelado";
     }
 
+    // Devuelve al cliente el depósito cuando una disputa ya lo dejó congelado.
+    devolverDepositoCongelado() {
+        if (this.estadoDeposito === "Congelado") this.estadoDeposito = "Liberado";
+    }
+
+    // Retiene para el propietario el depósito congelado por una disputa.
+    retenerDepositoPropietario() {
+        if (this.estadoDeposito === "Congelado") this.estadoDeposito = "Retenido a favor del propietario";
+    }
+
     reembolsar() {
         this.estado = "Reembolsado";
         this.liberarDeposito();
