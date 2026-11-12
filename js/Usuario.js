@@ -305,6 +305,33 @@ class Administrador extends Usuario {
         reserva.pago.congelarDeposito();
         guardarDatos();
     }
+
+    // Resuelve una disputa según el beneficiario y exige un motivo para registrar la decisión.
+    resolverDisputa(reservaId, aFavorDe, motivo) {
+        const reserva = buscarReserva(reservaId);
+        if (!reserva) throw new Error("Reserva no encontrada");
+        if (reserva.estado !== "En disputa") throw new Error("La reserva no está en disputa");
+        if (!motivo) throw new Error("Debe indicar el motivo de la decisión");
+        if (aFavorDe !== "CLIENTE" && aFavorDe !== "PROPIETARIO") throw new Error("La decisión no es válida");
+
+        // Cambia el depósito congelado según la decisión de Soporte.
+        if (aFavorDe === "CLIENTE") {
+            reserva.pago.devolverDepositoCongelado();
+        } else {
+            reserva.pago.retenerDepositoPropietario();
+        }
+
+        // Guarda el motivo, responsable y fecha para dejar constancia de la resolución.
+        reserva.resolucion = {
+            aFavorDe: aFavorDe,
+            motivo: motivo,
+            decididoPor: this.nombre,
+            fecha: new Date().toLocaleString("es-CO")
+        };
+        // Finalizar la reserva libera sus fechas y permite calcular ganancias y calificaciones.
+        reserva.estado = "Finalizada";
+        guardarDatos();
+    }
 }
 
 const clasesUsuario = { CLIENTE: Cliente, PROPIETARIO: Propietario, ADMIN: Administrador };

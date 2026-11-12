@@ -426,6 +426,7 @@ function mostrarSoporte() {
     let filasDocs = "";
     let filasAuditoria = "";
     let filasIncidentes = "";
+    let filasDisputas = "";
     let filasContratos = "";
     let filasCuentas = "";
     let porEscalar = 0;
@@ -453,6 +454,16 @@ function mostrarSoporte() {
             filasContratos += llenar("filaContrato", { id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), cliente: buscarUsuario(r.clienteId).nombre, estado: r.estado });
         }
     }
+    // Muestra las reservas en disputa y sus fotos para que Soporte pueda tomar una decisión.
+    for (const r of reservas) {
+        if (r.estado === "En disputa") {
+            filasDisputas += llenar("filaDisputa", {
+                id: r.id, vehiculo: nombreVehiculo(r.vehiculoId), cliente: buscarUsuario(r.clienteId).nombre,
+                fotosRecepcion: r.fotos.filter(f => f.tipo === "Recepción").map(f => f.nombre).join(", "),
+                fotosEntrega: r.fotos.filter(f => f.tipo === "Entrega").map(f => f.nombre).join(", ")
+            });
+        }
+    }
     for (const u of usuarios) {
         const bloqueada = u.estaBloqueado();
         filasCuentas += llenar("filaCuenta", {
@@ -466,6 +477,7 @@ function mostrarSoporte() {
     pintar("tablaDocumentos", filasDocs);
     pintar("tablaAuditoria", filasAuditoria);
     pintar("tablaIncidentes", filasIncidentes);
+    pintar("tablaDisputas", filasDisputas);
     pintar("tablaContratos", filasContratos);
     pintar("tablaCuentas", filasCuentas);
     document.getElementById("alertaIncidentes").hidden = porEscalar === 0;
@@ -483,6 +495,27 @@ function rechazarDoc(id) {
 
 function escalarIncidente(id) {
     ejecutar(() => usuarioActual.escalarSiniestro(id), "Expediente escalado a la aseguradora. Depósito congelado", mostrarSoporte);
+}
+
+// Mantiene el comportamiento anterior para cualquier uso que todavía envíe una decisión booleana.
+function resolverDisputaA(id, aFavorCliente) {
+    const motivo = prompt("Motivo de la resolución:");
+    if (motivo) ejecutar(() => usuarioActual.resolverDisputa(id, aFavorCliente ? "CLIENTE" : "PROPIETARIO", motivo),
+        aFavorCliente ? "Disputa resuelta. Depósito liberado al cliente" : "Disputa resuelta. Depósito retenido a favor del propietario", mostrarSoporte);
+}
+
+// Pide el motivo obligatorio antes de devolver el depósito al cliente.
+function resolverDisputaCliente(id) {
+    const motivo = prompt("Motivo de la decisión a favor del cliente:");
+    if (motivo) ejecutar(() => usuarioActual.resolverDisputa(id, "CLIENTE", motivo),
+        "Disputa resuelta. Depósito devuelto al cliente", mostrarSoporte);
+}
+
+// Pide el motivo obligatorio antes de retener el depósito a favor del propietario.
+function resolverDisputaPropietario(id) {
+    const motivo = prompt("Motivo de la decisión a favor del propietario:");
+    if (motivo) ejecutar(() => usuarioActual.resolverDisputa(id, "PROPIETARIO", motivo),
+        "Disputa resuelta. Depósito retenido a favor del propietario", mostrarSoporte);
 }
 
 function inmovilizar(id) {
